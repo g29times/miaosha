@@ -3,7 +3,7 @@ package com.imooc.miaosha.controller;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
-import com.imooc.miaosha.redis.StockKey;
+import com.imooc.miaosha.redis.lock.StockKey;
 import com.imooc.miaosha.redis.lock.RedisLock;
 import com.imooc.miaosha.service.id.SpecAnnotation;
 import org.slf4j.Logger;
@@ -31,18 +31,18 @@ import java.util.concurrent.TimeUnit;
 public class LoginController {
 
 	private static Logger log = LoggerFactory.getLogger(LoginController.class);
-	
+
 	@Autowired
 	MiaoshaUserService userService;
-	
+
 	@Autowired
 	RedisService redisService;
-	
+
     @RequestMapping("/to_login")
     public String toLogin() {
         return "login";
     }
-    
+
     @RequestMapping("/do_login")
     @ResponseBody
     public Result<String> doLogin(HttpServletResponse response, @Valid LoginVo loginVo) {

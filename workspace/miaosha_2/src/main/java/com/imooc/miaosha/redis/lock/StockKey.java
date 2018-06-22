@@ -1,4 +1,6 @@
-package com.imooc.miaosha.redis;
+package com.imooc.miaosha.redis.lock;
+
+import com.imooc.miaosha.redis.BasePrefix;
 
 public class StockKey extends BasePrefix {
 
