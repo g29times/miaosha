@@ -6,6 +6,6 @@ public class StockKey extends BasePrefix {
         super(expireSeconds, prefix);
     }
 
-    public static StockKey getByNum = new StockKey(-1, "Num");
+    public static StockKey getByNum = new StockKey(-1, "stockNum");
 
 }
