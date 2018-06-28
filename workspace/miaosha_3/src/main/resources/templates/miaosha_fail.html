@@ -2,9 +2,67 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>秒杀失败</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <!-- jquery -->
+    <script type="text/javascript" th:src="@{/js/jquery.min.js}"></script>
+    <!-- bootstrap -->
+    <link rel="stylesheet" type="text/css" th:href="@{/bootstrap/css/bootstrap.min.css}"/>
+    <script type="text/javascript" th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
+    <!-- jquery-validator -->
+    <script type="text/javascript" th:src="@{/jquery-validation/jquery.validate.min.js}"></script>
+    <script type="text/javascript" th:src="@{/jquery-validation/localization/messages_zh.min.js}"></script>
+    <!-- layer -->
+    <script type="text/javascript" th:src="@{/layer/layer.js}"></script>
+    <!-- md5.js -->
+    <script type="text/javascript" th:src="@{/js/md5.min.js}"></script>
+    <!-- common.js -->
+    <script type="text/javascript" th:src="@{/js/common.js}"></script>
 </head>
 <body>
-秒杀失败：<p th:text="${errmsg}"></p>
+<form id="miaoshaFailForm" name="myForm" action="" method="post">
+    <input type="hidden" id="goodsId" name="goodsId" th:value="${miaoshaGoodsId}"/>
+    <input type="hidden" id="orderId" name="orderId" th:value="${miaoshaOrderId}"/>
+    秒杀失败：<p th:text="${errmsg}"></p>
+    <span th:if="${miaoshaOrderId} == null">
+        <button class="btn btn-primary btn-block" type="submit" id="goodsButton">回到商品详情</button>
+    </span>
+    <span th:if="${miaoshaOrderId} != null">
+        <button class="btn btn-primary btn-block" type="submit" id="orderButton">回到订单详情</button>
+    </span>
+</form>
 </body>
+<script th:inline="javascript">
+//<![CDATA[
+    // 遇到的一些问题 https://blog.csdn.net/xyc_csdn/article/details/72801716
+    // 页面取值与js取值 https://blog.csdn.net/u013848401/article/details/78601672
+    // 表达式语法 https://www.cnblogs.com/nuoyiamy/p/5591559.html
+    // ajax属性详解 https://blog.csdn.net/mooncom/article/details/52402836
+
+    var miaoshaOrderId = [[${miaoshaOrderId}]];
+    var miaoshaGoodsId = [[${miaoshaGoodsId}]];
+
+    if (miaoshaOrderId == null) {
+        // jQuery中设置form表单中action值的方法 http://blog.sina.com.cn/s/blog_495e3d130100puqa.html
+        $("#miaoshaFailForm").attr("action", "/goods/to_detail/" + miaoshaGoodsId);
+    } else {
+        $("#miaoshaFailForm").attr("action", "/miaosha/to_order");
+
+        // $("#orderButton").click(function () {
+        //     $.ajax({
+        //         type: 'POST',
+        //         dataType: "text",
+        //         url: "/miaosha/to_order",
+        //         data: {"goodsId": miaoshaGoodsId, "orderId": miaoshaOrderId},
+        //         // Ajax发送POST请求SpringMVC页面跳转失败 https://www.cnblogs.com/boycelee/p/6243646.html
+        //         success: function(data) {
+        //             window.location.href = "/order_detail.html";
+        //         }
+        //         // $.ajax()post方式请求参数无法传递 https://blog.csdn.net/g1248019684/article/details/50850384
+        //         // contentType: "application/json"
+        //     });
+        // });
+    }
+
+//]]>
+</script>
 </html>
