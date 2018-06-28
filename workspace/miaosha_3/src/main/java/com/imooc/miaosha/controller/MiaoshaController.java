@@ -1,11 +1,5 @@
 package com.imooc.miaosha.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
 import com.imooc.miaosha.domain.MiaoshaOrder;
 import com.imooc.miaosha.domain.MiaoshaUser;
 import com.imooc.miaosha.domain.OrderInfo;
@@ -16,6 +10,11 @@ import com.imooc.miaosha.service.MiaoshaService;
 import com.imooc.miaosha.service.MiaoshaUserService;
 import com.imooc.miaosha.service.OrderService;
 import com.imooc.miaosha.vo.GoodsVo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/miaosha")
@@ -23,23 +22,24 @@ public class MiaoshaController {
 
 	@Autowired
 	MiaoshaUserService userService;
-	
+
 	@Autowired
 	RedisService redisService;
-	
+
 	@Autowired
 	GoodsService goodsService;
-	
+
 	@Autowired
 	OrderService orderService;
-	
+
 	@Autowired
 	MiaoshaService miaoshaService;
-	
-    @RequestMapping("/do_miaosha")
+
+	@RequestMapping("/do_miaosha")
     public String list(Model model,MiaoshaUser user,
     		@RequestParam("goodsId")long goodsId) {
-    	model.addAttribute("user", user);
+		// 判断登陆
+		model.addAttribute("user", user);
     	if(user == null) {
     		return "login";
     	}
