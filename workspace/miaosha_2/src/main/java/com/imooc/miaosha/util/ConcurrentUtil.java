@@ -1,6 +1,6 @@
 package com.imooc.miaosha.util;
 
-import com.imooc.miaosha.service.id.CyclicBarrierTask;
+import com.imooc.miaosha.util.id.CyclicBarrierTask;
 
 import java.util.concurrent.*;
 

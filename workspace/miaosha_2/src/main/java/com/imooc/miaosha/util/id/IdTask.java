@@ -1,4 +1,6 @@
-package com.imooc.miaosha.service.id;
+package com.imooc.miaosha.util.id;
+
+import com.imooc.miaosha.util.IdUtil;
 
 import java.util.concurrent.CyclicBarrier;
 

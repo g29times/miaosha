@@ -1,4 +1,4 @@
-package com.imooc.miaosha.service.id;
+package com.imooc.miaosha.util.id;
 
 import com.imooc.miaosha.redis.RedisService;
 import com.imooc.miaosha.redis.lock.StockKey;

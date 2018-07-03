@@ -1,4 +1,4 @@
-package com.imooc.miaosha.service.id;
+package com.imooc.miaosha.util.id;
 
 import java.lang.annotation.*;
 

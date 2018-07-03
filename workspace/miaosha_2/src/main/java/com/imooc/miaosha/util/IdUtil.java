@@ -1,5 +1,7 @@
-package com.imooc.miaosha.service.id;
+package com.imooc.miaosha.util;
 
+import com.imooc.miaosha.util.id.IdTask;
+import com.imooc.miaosha.util.id.SpecAnnotation;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;

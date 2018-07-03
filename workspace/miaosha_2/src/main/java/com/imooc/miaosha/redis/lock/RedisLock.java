@@ -1,6 +1,6 @@
 package com.imooc.miaosha.redis.lock;
 
-import com.imooc.miaosha.service.id.SpecAnnotation;
+import com.imooc.miaosha.util.id.SpecAnnotation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
