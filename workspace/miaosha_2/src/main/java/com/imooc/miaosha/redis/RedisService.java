@@ -34,7 +34,7 @@ public class RedisService {
                 result = function.apply(a, b);
 //                result = plus(StockKey.getByNum, "");
 
-                Thread.sleep(10000);
+                Thread.sleep(3000);
                 System.out.println(serviceId + "【FINISH JOB. RESULT=" + result + "】");
             } else {
                 System.out.println(serviceId + " doesn't get lock");

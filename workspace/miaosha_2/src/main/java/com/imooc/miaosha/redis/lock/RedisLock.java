@@ -10,6 +10,10 @@ import java.util.Collections;
 
 import static com.imooc.miaosha.redis.RedisService.returnToPool;
 
+/**
+ * https://www.cnblogs.com/linjiqin/p/8003838.html
+ * https://www.cnblogs.com/0201zcr/p/5942748.html
+ */
 @Component
 public class RedisLock {
 
