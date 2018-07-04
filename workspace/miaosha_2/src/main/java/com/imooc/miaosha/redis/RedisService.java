@@ -2,6 +2,8 @@ package com.imooc.miaosha.redis;
 
 import com.alibaba.fastjson.JSON;
 import com.imooc.miaosha.redis.lock.RedisLock;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import redis.clients.jedis.Jedis;
@@ -11,6 +13,8 @@ import java.util.function.BiFunction;
 
 @Service
 public class RedisService {
+
+    private static Logger logger = LoggerFactory.getLogger(RedisService.class);
 
     @Autowired
     JedisPool jedisPool;
@@ -193,7 +197,7 @@ public class RedisService {
         }
     }
 
-    private void returnToPool(Jedis jedis) {
+    public static void returnToPool(Jedis jedis) {
         if (jedis != null) {
             jedis.close();
         }

@@ -1,6 +1,8 @@
 package com.imooc.miaosha.util;
 
 import com.imooc.miaosha.util.id.CyclicBarrierTask;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.*;
 
@@ -9,6 +11,8 @@ import java.util.concurrent.*;
  * https://blog.csdn.net/BDblog_chang/article/details/71076098
  */
 public class ConcurrentUtil {
+
+    private static Logger logger = LoggerFactory.getLogger(ConcurrentUtil.class);
 
     /**
      * 并发测试
@@ -28,7 +32,7 @@ public class ConcurrentUtil {
                 // 所有线程池中的线程执行完毕，执行后续操作
                 Thread.sleep(10);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
             }
         }
     }

@@ -8,6 +8,8 @@ import redis.clients.jedis.Jedis;
 
 import java.util.Collections;
 
+import static com.imooc.miaosha.redis.RedisService.returnToPool;
+
 @Component
 public class RedisLock {
 
@@ -33,12 +35,18 @@ public class RedisLock {
      */
     @SpecAnnotation(desc = "尝试获取分布式锁")
     public static boolean tryLock(Jedis jedis, String lockKey, String requester, int expireTime) {
-        System.out.println(Thread.currentThread().getName() + " try lock");
-        String result = jedis.set(lockKey, requester, SET_IF_NOT_EXIST, SET_WITH_EXPIRE_TIME, expireTime);
-        if (LOCK_SUCCESS.equals(result)) {
-            return true;
+        try {
+            System.out.println(Thread.currentThread().getName() + " try lock");
+            String result = jedis.set(lockKey, requester, SET_IF_NOT_EXIST, SET_WITH_EXPIRE_TIME, expireTime);
+            if (LOCK_SUCCESS.equals(result)) {
+                return true;
+            }
+            return false;
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            returnToPool(jedis);
+            return false;
         }
-        return false;
     }
 
     /**
@@ -51,12 +59,18 @@ public class RedisLock {
      */
     @SpecAnnotation(desc = "尝试释放分布式锁")
     public static boolean tryUnlock(Jedis jedis, String lockKey, String requester) {
-        System.out.println(Thread.currentThread().getName() + " try unlock");
-        String script = "if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('del', KEYS[1]) else return 0 end";
-        Object result = jedis.eval(script, Collections.singletonList(lockKey), Collections.singletonList(requester));
-        if (RELEASE_SUCCESS.equals(result)) {
-            return true;
+        try {
+            System.out.println(Thread.currentThread().getName() + " try unlock");
+            String script = "if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('del', KEYS[1]) else return 0 end";
+            Object result = jedis.eval(script, Collections.singletonList(lockKey), Collections.singletonList(requester));
+            if (RELEASE_SUCCESS.equals(result)) {
+                return true;
+            }
+            return false;
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            returnToPool(jedis);
+            return false;
         }
-        return false;
     }
 }
