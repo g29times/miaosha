@@ -15,7 +15,6 @@ public class RedisService {
     @Autowired
     JedisPool jedisPool;
 
-    //    @SpecAnnotation(desc = "lock")
     public Object lock(BiFunction function, Object a, Object b) {
         Jedis jedis = null;
         String serviceId = Thread.currentThread().getName();
@@ -24,15 +23,15 @@ public class RedisService {
             jedis = jedisPool.getResource();
             // 1.此处失效时间应大于业务操作时间
             if (RedisLock.tryLock(jedis, "LOCK" + ":" + "STOCK", serviceId, 30000)) {
-                System.out.println(serviceId + " 【GET LOCK】");
+                System.out.println(serviceId + "【GET LOCK】");
 
                 // 2.执行和睡眠先后顺序很重要
+                System.out.println(serviceId + "【DOING JOB............】");
                 result = function.apply(a, b);
 //                result = plus(StockKey.getByNum, "");
 
-                Thread.sleep(15000);
-                System.out.println("---------------------------");
-                System.out.println(serviceId + " 【FINISH. RESULT=" + result + "】");
+                Thread.sleep(10000);
+                System.out.println(serviceId + "【FINISH JOB. RESULT=" + result + "】");
             } else {
                 System.out.println(serviceId + " doesn't get lock");
             }
@@ -40,7 +39,7 @@ public class RedisService {
             System.out.println(e.getMessage());
         } finally {
             if (RedisLock.tryUnlock(jedis, "LOCK" + ":" + "STOCK", serviceId)) {
-                System.out.println(serviceId + " 【UNLOCK】");
+                System.out.println(serviceId + "【UNLOCK】");
             } else {
                 System.out.println(serviceId + " doesn't have lock");
             }

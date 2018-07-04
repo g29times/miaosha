@@ -5,14 +5,13 @@ import com.imooc.miaosha.redis.lock.StockKey;
 import com.imooc.miaosha.result.Result;
 import com.imooc.miaosha.service.MiaoshaUserService;
 import com.imooc.miaosha.util.ConcurrentUtil;
+import com.imooc.miaosha.util.id.SpecAnnotation;
 import com.imooc.miaosha.vo.LoginVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -44,10 +43,10 @@ public class LoginController {
     }
 
 
-    @GetMapping("/lock/modify")
+    @GetMapping("/lock/{threadNum}")
     @ResponseBody
-//    @SpecAnnotation(desc = "lockModify")
-    public Object lockModify(/*@RequestParam Integer stockNumber*/) throws Exception {
+    @SpecAnnotation(desc = "testlock")
+    public Object lockModify(@PathVariable Integer threadNum) throws Exception {
 
         // 初始化
 //        redisService.set(StockKey.getByNum, "", stockNumber);
@@ -69,10 +68,10 @@ public class LoginController {
 //        }
 
         // 多线程测试
-        ConcurrentUtil.conTest(2);
+        ConcurrentUtil.conTest(threadNum);
 
         Integer stockNumber = redisService.get(StockKey.getByNum, "", Integer.class);
-        return "modify stockNumber success " + stockNumber;
+        return "success modify stockNumber to " + stockNumber;
     }
 
 }

@@ -12,13 +12,13 @@ public class ConcurrentUtil {
 
     /**
      * 并发测试
-     * 模拟count个并发
+     * 模拟threadNum个并发
      */
-    public static void conTest(int count) {
-        CyclicBarrier cyclicBarrier = new CyclicBarrier(count);
-        ExecutorService executorService = new ThreadPoolExecutor(count, count,
+    public static void conTest(int threadNum) {
+        CyclicBarrier cyclicBarrier = new CyclicBarrier(threadNum);
+        ExecutorService executorService = new ThreadPoolExecutor(threadNum, threadNum,
                 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
-        for (int i = 0; i < count; i++) {
+        for (int i = 0; i < threadNum; i++) {
             executorService.execute(new CyclicBarrierTask(cyclicBarrier));
         }
         executorService.shutdown();
