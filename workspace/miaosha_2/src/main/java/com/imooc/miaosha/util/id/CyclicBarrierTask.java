@@ -22,11 +22,8 @@ public class CyclicBarrierTask implements Runnable {
             // 等待所有线程准备就绪
             cyclicBarrier.await();
             /************************* 业务开始 ****************************/
+            // 同时执行测试内容
             redisService.lock(redisService::plus, StockKey.getByNum, "");
-
-//            IdUtil center0worker0 = IdUtil.getInstance(0, 0);
-//            // 同时执行测试内容
-//            center0worker0.nextId();
 //            System.out.println(Thread.currentThread().getName() + " " + service.nextId());
             /************************* 业务结束 ****************************/
         } catch (Exception e) {

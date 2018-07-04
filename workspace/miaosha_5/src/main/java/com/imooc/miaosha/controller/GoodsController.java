@@ -56,6 +56,7 @@ public class GoodsController {
     	//取缓存
     	String html = redisService.get(GoodsKey.getGoodsList, "", String.class);
     	if(!StringUtils.isEmpty(html)) {
+    		// 页面缓存
     		return html;
     	}
     	List<GoodsVo> goodsList = goodsService.listGoodsVo();
@@ -71,7 +72,7 @@ public class GoodsController {
     	return html;
     }
     
-    @RequestMapping(value="/to_detail2/{goodsId}",produces="text/html")
+    @RequestMapping(value="/to_detail/{goodsId}",produces="text/html")
     @ResponseBody
     public String detail2(HttpServletRequest request, HttpServletResponse response, Model model,MiaoshaUser user,
     		@PathVariable("goodsId")long goodsId) {

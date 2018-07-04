@@ -70,7 +70,6 @@ public class LoginController {
 
         // 多线程测试
         ConcurrentUtil.conTest(2);
-//        ConcurrentUtil.conTest(2);
 
         Integer stockNumber = redisService.get(StockKey.getByNum, "", Integer.class);
         return "modify stockNumber success " + stockNumber;

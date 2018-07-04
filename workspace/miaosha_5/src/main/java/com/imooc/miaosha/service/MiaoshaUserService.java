@@ -49,7 +49,7 @@ public class MiaoshaUserService {
 		if(user == null) {
 			throw new GlobalException(CodeMsg.MOBILE_NOT_EXIST);
 		}
-		//更新数据库
+		//更新数据库 此处新建对象的目的是优化SQL
 		MiaoshaUser toBeUpdate = new MiaoshaUser();
 		toBeUpdate.setId(id);
 		toBeUpdate.setPassword(MD5Util.formPassToDBPass(formPass, user.getSalt()));
