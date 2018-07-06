@@ -1,7 +1,7 @@
 package com.imooc.miaosha.controller;
 
 import com.imooc.miaosha.redis.RedisService;
-import com.imooc.miaosha.redis.lock.StockKey;
+import com.imooc.miaosha.redis.StockKey;
 import com.imooc.miaosha.result.Result;
 import com.imooc.miaosha.service.MiaoshaUserService;
 import com.imooc.miaosha.util.ConcurrentUtil;

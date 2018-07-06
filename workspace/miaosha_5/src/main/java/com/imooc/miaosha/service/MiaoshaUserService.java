@@ -42,7 +42,7 @@ public class MiaoshaUserService {
 		}
 		return user;
 	}
-	// http://blog.csdn.net/tTU1EvLDeLFq5btqiK/article/details/78693323
+	// https://coolshell.cn/articles/17416.html
 	public boolean updatePassword(String token, long id, String formPass) {
 		//取user
 		MiaoshaUser user = getById(id);

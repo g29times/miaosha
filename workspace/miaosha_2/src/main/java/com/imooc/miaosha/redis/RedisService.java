@@ -23,10 +23,11 @@ public class RedisService {
         Jedis jedis = null;
         String serviceId = Thread.currentThread().getName();
         Object result = null;
+        String lockKey = "LOCK" + ":" + "STOCK";
         try {
             jedis = jedisPool.getResource();
             // 1.此处失效时间应大于业务操作时间
-            if (RedisLock.tryLock(jedis, "LOCK" + ":" + "STOCK", serviceId, 30000)) {
+            if (RedisLock.tryLock(jedis, lockKey, serviceId, 30000)) {
                 System.out.println(serviceId + "【GET LOCK】");
 
                 // 2.执行和睡眠先后顺序很重要
@@ -42,12 +43,12 @@ public class RedisService {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         } finally {
-            if (RedisLock.tryUnlock(jedis, "LOCK" + ":" + "STOCK", serviceId)) {
+            returnToPool(jedis);
+            if (RedisLock.tryUnlock(jedis, lockKey, serviceId)) {
                 System.out.println(serviceId + "【UNLOCK】");
             } else {
                 System.out.println(serviceId + " doesn't have lock");
             }
-            returnToPool(jedis);
         }
         return result;
     }

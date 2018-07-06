@@ -1,6 +1,5 @@
 package com.imooc.miaosha.redis.lock;
 
-import com.imooc.miaosha.util.id.SpecAnnotation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -37,10 +36,8 @@ public class RedisLock {
      * @param expireTime 超期时间
      * @return 是否获取成功
      */
-    @SpecAnnotation(desc = "尝试获取分布式锁")
     public static boolean tryLock(Jedis jedis, String lockKey, String requester, int expireTime) {
         try {
-            System.out.println(Thread.currentThread().getName() + " try lock");
             String result = jedis.set(lockKey, requester, SET_IF_NOT_EXIST, SET_WITH_EXPIRE_TIME, expireTime);
             if (LOCK_SUCCESS.equals(result)) {
                 return true;
@@ -48,8 +45,9 @@ public class RedisLock {
             return false;
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            returnToPool(jedis);
             return false;
+        } finally {
+            returnToPool(jedis);
         }
     }
 
@@ -61,10 +59,8 @@ public class RedisLock {
      * @param requester 请求者
      * @return 是否释放成功
      */
-    @SpecAnnotation(desc = "尝试释放分布式锁")
     public static boolean tryUnlock(Jedis jedis, String lockKey, String requester) {
         try {
-            System.out.println(Thread.currentThread().getName() + " try unlock");
             String script = "if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('del', KEYS[1]) else return 0 end";
             Object result = jedis.eval(script, Collections.singletonList(lockKey), Collections.singletonList(requester));
             if (RELEASE_SUCCESS.equals(result)) {
@@ -73,8 +69,9 @@ public class RedisLock {
             return false;
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            returnToPool(jedis);
             return false;
+        } finally {
+            returnToPool(jedis);
         }
     }
 }
