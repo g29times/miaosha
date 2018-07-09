@@ -6,13 +6,33 @@ import org.springframework.stereotype.Component;
 @Component
 @ConfigurationProperties(prefix="redis")
 public class RedisConfig {
+
 	private String host;
 	private int port;
-	private int timeout;//秒
+	private int timeout;//毫秒
 	private String password;
 	private int poolMaxTotal;
 	private int poolMaxIdle;
-	private int poolMaxWait;//秒
+	private int poolMaxWait;//毫秒
+	private boolean testWhileIdle;
+	private int timeBetweenEvictionRunsMillis; // 毫秒
+
+	public boolean isTestWhileIdle() {
+		return testWhileIdle;
+	}
+
+	public void setTestWhileIdle(boolean testWhileIdle) {
+		this.testWhileIdle = testWhileIdle;
+	}
+
+	public int getTimeBetweenEvictionRunsMillis() {
+		return timeBetweenEvictionRunsMillis;
+	}
+
+	public void setTimeBetweenEvictionRunsMillis(int timeBetweenEvictionRunsMillis) {
+		this.timeBetweenEvictionRunsMillis = timeBetweenEvictionRunsMillis;
+	}
+
 	public String getHost() {
 		return host;
 	}

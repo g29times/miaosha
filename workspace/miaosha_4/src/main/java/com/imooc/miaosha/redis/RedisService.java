@@ -10,10 +10,10 @@ import redis.clients.jedis.JedisPool;
 
 @Service
 public class RedisService {
-	
+
 	@Autowired
 	JedisPool jedisPool;
-	
+
 	/**
 	 * 获取当个对象
 	 * */
@@ -30,7 +30,7 @@ public class RedisService {
 			  returnToPool(jedis);
 		 }
 	}
-	
+
 	/**
 	 * 设置对象
 	 * */
@@ -55,7 +55,7 @@ public class RedisService {
 			  returnToPool(jedis);
 		 }
 	}
-	
+
 	/**
 	 * 判断key是否存在
 	 * */
@@ -70,7 +70,7 @@ public class RedisService {
 			  returnToPool(jedis);
 		 }
 	}
-	
+
 	/**
 	 * 增加值
 	 * */
@@ -85,7 +85,7 @@ public class RedisService {
 			  returnToPool(jedis);
 		 }
 	}
-	
+
 	/**
 	 * 减少值
 	 * */
@@ -100,7 +100,7 @@ public class RedisService {
 			  returnToPool(jedis);
 		 }
 	}
-	
+
 	private <T> String beanToString(T value) {
 		if(value == null) {
 			return null;
@@ -133,7 +133,7 @@ public class RedisService {
 		}
 	}
 
-	private void returnToPool(Jedis jedis) {
+	public static void returnToPool(Jedis jedis) {
 		 if(jedis != null) {
 			 jedis.close();
 		 }

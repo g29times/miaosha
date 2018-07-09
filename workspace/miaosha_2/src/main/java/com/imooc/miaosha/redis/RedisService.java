@@ -42,12 +42,12 @@ public class RedisService {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         } finally {
+            returnToPool(jedis);
             if (RedisLock.tryUnlock(jedis, "LOCK" + ":" + "STOCK", serviceId)) {
                 System.out.println(serviceId + "【UNLOCK】");
             } else {
                 System.out.println(serviceId + " doesn't have lock");
             }
-            returnToPool(jedis);
         }
         return result;
     }
