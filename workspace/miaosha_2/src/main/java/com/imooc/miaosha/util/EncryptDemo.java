@@ -1,6 +1,7 @@
 package com.imooc.miaosha.util;
 
 
+import org.apache.commons.lang3.StringUtils;
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
@@ -34,8 +35,11 @@ public class EncryptDemo {
 
     public static final String SIGNATURE_ALGORITHM = "withRSA";
     public static final String ENCODE_ALGORITHM = "SHA-256";
-    public static final String PLAIN_TEXT = "iucnoc-2ahdie-9dqwia";
-    public static final int SALT_LENGTH = 12;
+
+    public static final String PLAIN_TEXT = "827ee6f9-b6dc-4d63-ac7b-7e0337794dbd";
+
+    public static final int SALT_LENGTH = 8;
+    public static final String SALT = "12345678";
 
     public static void main(String[] args) throws Exception {
         // ******************************** 非对称
@@ -57,9 +61,28 @@ public class EncryptDemo {
 //        System.out.println(Arrays.toString(i2));
 //        System.out.println(Arrays.toString(i3));
 
+        byte aa = 'a';
+        byte bb = 5;
+        byte[] c = new byte[2];
+        c[0] = aa;
+        c[1] = bb;
+        System.out.println(Arrays.toString(c));
+        SecureRandom random = new SecureRandom();
+        c = new byte[SALT_LENGTH];
+        random.nextBytes(c);
+        System.out.println(Arrays.toString(c));
+
         // ******************************** 对称
 
-        // ******** 1.字节数组传输成功
+//        bytesToHexString编码
+        // ******** MD5加密
+        MessageDigest md = MessageDigest.getInstance("MD5");
+        md.update((SALT + PLAIN_TEXT).getBytes("UTF-8"));
+        System.out.println(bytesToHexString(md.digest()));
+        System.out.println();
+
+//        BASE64编码
+        // ******** 1.字节数组传参
         byte[] before = encryptSalt(PLAIN_TEXT);
         BASE64Encoder enc = new BASE64Encoder();
         // 客户端使用BASE64编码
@@ -68,32 +91,33 @@ public class EncryptDemo {
         // 服务端使用BASE64解码
         byte[] after = dec.decodeBuffer(mes);
         System.out.println(verifySalt(PLAIN_TEXT, after));
-        System.out.println();
+        System.out.println("------------------------------------------");
 
-        /******** 2.String传输成功
+        /******** 2.String传参
          * 使用：
          * 两端约定：盐值长度
          * 检测：传入数据 + 密钥
          */
-        String simple = encryptSaltSimple(PLAIN_TEXT);
+        // 验证随机salt
+        String simple = encryptSaltSimple(null, PLAIN_TEXT);
+        System.out.print("simple " + simple);
         System.out.println(verifySaltSimple(PLAIN_TEXT, simple));
         System.out.println();
-
-
+        // 验证固定salt
+        simple = encryptSaltSimple(SALT, PLAIN_TEXT);
+        System.out.print("simple " + simple);
+        System.out.println(verifySaltSimple(PLAIN_TEXT, simple));
+        System.out.println();
 
         // ******** 1.16进制转换失败
         byte[] b = hexStringToByte(PLAIN_TEXT);
         System.out.println("convert 16 " + bytesToHexString(b));
 
-        // ******** 2.简易转换成功
+        // ******** 2.10进制转换成功
         byte[] bytes = PLAIN_TEXT.getBytes();
         System.out.println("convert 10 " + new String(bytes));
         System.out.println();
 
-        // ******** MD5加密
-        MessageDigest md = MessageDigest.getInstance("MD5");
-        md.update(("123" + PLAIN_TEXT).getBytes("UTF-8"));
-        System.out.println(bytesToHexString(md.digest()));
     }
 
     // ************************************* 非对称加密 *************************************
@@ -279,16 +303,32 @@ public class EncryptDemo {
 
     // ************************************* 盐值加密10进制版 *************************************
 
-    public static String encryptSaltSimple(String plainText) throws Exception {
+    /**
+     * 客户端加密方法
+     * 记录1 plainText 2 code
+     * 传参 verify(plainText, code)
+     *
+     * @param saltStr
+     * @param plainText
+     * @return
+     * @throws Exception
+     */
+    public static String encryptSaltSimple(String saltStr, String plainText) throws Exception {
         //声明加密后的口令数组变量
         byte[] pwd = null;
-        //随机数生成器
-        SecureRandom random = new SecureRandom();
-        //声明盐数组变量
-        byte[] salt = new byte[SALT_LENGTH];
-        //将随机数放入盐变量中
-        random.nextBytes(salt);
-        System.out.println("salt " + bytesToHexString(salt));
+        byte[] salt = null;
+        if (StringUtils.isBlank(saltStr)) {
+            //随机数生成器
+            SecureRandom random = new SecureRandom();
+            //声明盐数组变量
+            /*byte[] */
+            salt = new byte[SALT_LENGTH];
+            //将随机数放入盐变量中
+            random.nextBytes(salt);
+        } else {
+            salt = saltStr.getBytes("UTF-8");
+        }
+//        System.out.println("salt " + bytesToHexString(salt));
 
         //创建消息摘要MD5
         MessageDigest md = MessageDigest.getInstance("MD5");
@@ -298,7 +338,7 @@ public class EncryptDemo {
         md.update(plainText.getBytes("UTF-8"));
         //获得消息摘要的字节数组
         byte[] digest = md.digest();
-        System.out.println("digest " + bytesToHexString(digest));
+//        System.out.println("digest " + bytesToHexString(digest));
 
         //因为要在口令的字节数组中存放盐，所以加上盐的字节长度
         pwd = new byte[digest.length + SALT_LENGTH];
@@ -313,7 +353,8 @@ public class EncryptDemo {
 //        return pwd;
         //3.客户端使用BASE64编码
         BASE64Encoder enc = new BASE64Encoder();
-        return enc.encodeBuffer(pwd);
+        String code = enc.encodeBuffer(pwd);
+        return code;
     }
 
     public static boolean verifySaltSimple(String plainText, String encrypt) throws Exception {
@@ -351,4 +392,38 @@ public class EncryptDemo {
             return false;
         }
     }
+
+    public static String encryptSaltSimple(String plainText) throws Exception {
+        //声明加密后的口令数组变量
+        byte[] pwd = null;
+        //随机数生成器
+        SecureRandom random = new SecureRandom();
+        //声明盐数组变量
+        /* byte[] */
+        byte[] salt = new byte[SALT_LENGTH];
+        //将随机数放入盐变量中
+        random.nextBytes(salt);
+
+        //创建消息摘要MD5
+        MessageDigest md = MessageDigest.getInstance("MD5");
+        //将盐数据传入消息摘要对象
+        md.update(salt);
+        //将口令的数据传给消息摘要对象
+        md.update(plainText.getBytes("UTF-8"));
+        //获得消息摘要的字节数组
+        byte[] digest = md.digest();
+
+        //因为要在口令的字节数组中存放盐，所以加上盐的字节长度
+        pwd = new byte[digest.length + SALT_LENGTH];
+        //将盐的字节拷贝到生成的加密口令字节数组的前12个字节，以便在验证口令时取出盐
+        System.arraycopy(salt, 0, pwd, 0, SALT_LENGTH);
+        //将消息摘要拷贝到加密口令字节数组从第13个字节开始的字节
+        System.arraycopy(digest, 0, pwd, SALT_LENGTH, digest.length);
+
+        //将字节数组格式加密后的口令转化为BASE64编码
+        BASE64Encoder enc = new BASE64Encoder();
+        String code = enc.encodeBuffer(pwd);
+        return code;
+    }
+
 }
