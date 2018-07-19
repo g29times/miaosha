@@ -1,6 +1,9 @@
 package com.imooc.miaosha.config;
 
+import com.alibaba.fastjson.JSON;
 import com.google.gson.Gson;
+import com.imooc.miaosha.result.CodeMsg;
+import com.imooc.miaosha.result.Result;
 import com.imooc.miaosha.util.id.SpecAnnotation;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -17,6 +20,8 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.OutputStream;
 
 /**
  * 切面工具类
@@ -65,7 +70,7 @@ public class BusiAop {
      */
     @Around("ctrlPointcut()")
     public Object aroundController(ProceedingJoinPoint pjp) throws Throwable {
-        return doLog(pjp, false);
+        return runAndLog(pjp, false);
     }
 
     /**
@@ -79,18 +84,34 @@ public class BusiAop {
     @Around("commonPointcut() && @annotation(spec)")
     public Object aroundSpec(ProceedingJoinPoint pjp, SpecAnnotation spec) throws Throwable {
         logger.info("LOG_DESC : {}", spec.desc());
-        return doLog(pjp, true);
+        return runAndLog(pjp, true);
+    }
+
+
+    // ***************************** 业务逻辑抽取
+    private boolean businessLogicPass() {
+        return true;
+    }
+
+    // ***************************** 限流作业抽取
+    private void render(HttpServletResponse response, CodeMsg cm) throws Exception {
+        response.setContentType("application/json;charset=UTF-8");
+        OutputStream out = response.getOutputStream();
+        String str = JSON.toJSONString(Result.error(cm));
+        out.write(str.getBytes("UTF-8"));
+        out.flush();
+        out.close();
     }
 
     // ***************************** 日志作业抽取
 
     /**
      * @param pjp
-     * @param isDurable 是否需要持久化
+     * @param needLog 是否需要持久化
      * @return
      * @throws Throwable
      */
-    private Object doLog(ProceedingJoinPoint pjp, boolean isDurable) throws Throwable {
+    private Object runAndLog(ProceedingJoinPoint pjp, boolean needLog) throws Throwable {
         Gson gson = new Gson();
         StringBuffer METHOD_PARAMS = new StringBuffer("{");
 
@@ -115,9 +136,10 @@ public class BusiAop {
             METHOD_PARAMS.deleteCharAt(0);
         }
 
-        // request部分
-        RequestAttributes ra = RequestContextHolder.getRequestAttributes();
-        HttpServletRequest request = ((ServletRequestAttributes) ra).getRequest();
+        // Http部分
+        RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+        HttpServletRequest request = ((ServletRequestAttributes) requestAttributes).getRequest();
+        HttpServletResponse response = ((ServletRequestAttributes) requestAttributes).getResponse();
         String REQUEST_URL = request.getRequestURL().toString();
         String REQUEST_METHOD = request.getMethod();
         String FULL_URL = REQUEST_METHOD + " " + REQUEST_URL;
@@ -126,8 +148,12 @@ public class BusiAop {
 
         // 执行
         try {
-            METHOD_RESULT = pjp.proceed();
-            logger.debug("请求结束，controller的返回值是 : {}", METHOD_RESULT);
+            if (businessLogicPass()) {
+                METHOD_RESULT = pjp.proceed();
+                logger.debug("请求结束，controller的返回值是 : {}", METHOD_RESULT);
+            } else {
+                render(response, CodeMsg.ACCESS_LIMIT_REACHED);
+            }
         } catch (Throwable e) {
 //            logger.error(e.getClass().getName() + ": " + e.getMessage(), e);
             throw e;
