@@ -1,7 +1,7 @@
 package com.imooc.miaosha.util.id;
 
 import com.imooc.miaosha.redis.RedisService;
-import com.imooc.miaosha.redis.lock.StockKey;
+import com.imooc.miaosha.redis.StockKey;
 import com.imooc.miaosha.util.BeanFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

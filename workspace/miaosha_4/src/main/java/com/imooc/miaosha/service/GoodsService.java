@@ -20,6 +20,7 @@ public class GoodsService {
 	}
 
 	public GoodsVo getGoodsVoByGoodsId(long goodsId) {
+		System.out.println("检查库存");
 		return goodsDao.getGoodsVoByGoodsId(goodsId);
 	}
 
