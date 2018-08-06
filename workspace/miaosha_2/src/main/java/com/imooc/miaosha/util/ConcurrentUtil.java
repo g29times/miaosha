@@ -20,15 +20,16 @@ public class ConcurrentUtil {
      */
     public static void conTest(int threadNum) {
         CyclicBarrier cyclicBarrier = new CyclicBarrier(threadNum);
-        ExecutorService executorService = new ThreadPoolExecutor(threadNum, threadNum,
+        ExecutorService pool = new ThreadPoolExecutor(threadNum, threadNum,
                 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
         for (int i = 0; i < threadNum; i++) {
-            executorService.execute(new CyclicBarrierTask(cyclicBarrier));
+            pool.execute(new CyclicBarrierTask(cyclicBarrier));
         }
-        executorService.shutdown();
+        pool.shutdown();
         // 判断是否所有的线程已经运行完
-        while (!executorService.isTerminated()) {
+        while (!pool.isTerminated()) {
             try {
+                System.out.println("pool isn't Terminated");
                 // 所有线程池中的线程执行完毕，执行后续操作
                 Thread.sleep(10);
             } catch (InterruptedException e) {

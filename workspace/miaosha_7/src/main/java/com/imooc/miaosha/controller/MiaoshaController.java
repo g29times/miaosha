@@ -105,7 +105,7 @@ public class MiaoshaController implements InitializingBean {
     	}
     	//验证path
     	boolean check = miaoshaService.checkPath(user, goodsId, path);
-    	if(!check){
+    	if(!check) {
     		return Result.error(CodeMsg.REQUEST_ILLEGAL);
     	}
     	//内存标记，减少redis访问

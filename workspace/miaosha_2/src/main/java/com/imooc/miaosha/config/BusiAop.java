@@ -22,6 +22,9 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.OutputStream;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 切面工具类
@@ -143,8 +146,14 @@ public class BusiAop {
         String REQUEST_URL = request.getRequestURL().toString();
         String REQUEST_METHOD = request.getMethod();
         String FULL_URL = REQUEST_METHOD + " " + REQUEST_URL;
-        logger.debug("请求开始, url: {}, method: {}, params: {}",
-                FULL_URL, METHOD_NAME, METHOD_PARAMS);
+        Map headerMap = new HashMap(20);
+        Enumeration headers = request.getHeaderNames();
+        while(headers.hasMoreElements()) {
+            String key = headers.nextElement().toString();
+            headerMap.put(key, request.getHeader(key));
+        }
+        logger.debug("请求开始, request url: {}, request header: {}, method: {}, params: {}",
+                FULL_URL, headerMap, METHOD_NAME, METHOD_PARAMS);
 
         // 执行
         try {

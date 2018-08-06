@@ -62,18 +62,18 @@ public class MQReceiver {
     }
 
     /**
-     * 2 Topic / Fanout模式
+     * 2 Fanout / Topic模式
      *
      * @param message
      */
     @RabbitListener(queues = MQConfig.TOPIC_QUEUE1)
     public void receiveTopic1(String message) {
-        log.info(" topic  queue1 message:" + message);
+        log.info(" fanout/topic receive queue1 message:" + message);
     }
 
     @RabbitListener(queues = MQConfig.TOPIC_QUEUE2)
     public void receiveTopic2(String message) {
-        log.info(" topic  queue2 message:" + message);
+        log.info(" fanout/topic receive queue2 message:" + message);
     }
 
     /**
@@ -83,8 +83,7 @@ public class MQReceiver {
      */
     @RabbitListener(queues = MQConfig.HEADER_QUEUE)
     public void receiveHeaderQueue(byte[] message) {
-        log.info(" header  queue message:" + new String(message));
+        log.info(" header receive queue message:" + new String(message));
     }
-
 
 }
