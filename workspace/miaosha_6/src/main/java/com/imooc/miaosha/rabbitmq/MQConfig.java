@@ -26,7 +26,7 @@ public class MQConfig {
     public static final String HEADER_QUEUE = "header.queue";
 
     public static final String TOPIC_EXCHANGE = "topicExchage";
-    public static final String FANOUT_EXCHANGE = "fanoutxchage";
+    public static final String FANOUT_EXCHANGE = "fanoutExchage";
     public static final String HEADERS_EXCHANGE = "headersExchage";
 
     /**

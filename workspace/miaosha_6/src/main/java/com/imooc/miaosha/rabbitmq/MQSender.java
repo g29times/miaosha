@@ -17,6 +17,10 @@ public class MQSender {
     @Autowired
     AmqpTemplate amqpTemplate;
 
+    /**
+     * 使用Direct模式
+     * @param mm
+     */
     public void sendMiaoshaMessage(MiaoshaMessage mm) {
         String msg = RedisService.beanToString(mm);
         log.info("send message:" + msg);
@@ -24,7 +28,7 @@ public class MQSender {
     }
 
     /**
-     * 1 Direct模式
+     * Demo 1 Direct模式
      *
      * @param message
      */
@@ -35,7 +39,7 @@ public class MQSender {
     }
 
     /**
-     * 2 交换机1-Topic通配符模式
+     * Demo 2 交换机1-Topic通配符模式
      *
      * @param message
      */
@@ -47,7 +51,7 @@ public class MQSender {
     }
 
     /**
-     * 3 交换机2-Fanout广播模式
+     * Demo 3 交换机2-Fanout广播模式
      *
      * @param message
      */
@@ -58,7 +62,7 @@ public class MQSender {
     }
 
     /**
-     * 4 交换机3-Header字典模式
+     * Demo 4 交换机3-Header字典模式
      *
      * @param message
      */

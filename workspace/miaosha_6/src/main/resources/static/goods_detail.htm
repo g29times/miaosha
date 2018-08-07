@@ -82,7 +82,7 @@ function getMiaoshaResult(goodsId){
 				var result = data.data;
 				if(result < 0){
 					layer.msg("对不起，秒杀失败");
-				}else if(result == 0){//继续轮询
+				}else if(result == 0){ // 50毫秒后继续轮询
 					setTimeout(function(){
 						getMiaoshaResult(goodsId);
 					}, 50);
