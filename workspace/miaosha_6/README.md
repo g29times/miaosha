@@ -1,4 +1,5 @@
 第7章笔记
+消息队列异步下单
 
 0 使用UserUtil初始化user信息
 1 7-4 rabbit四种exchange模式
